@@ -1,6 +1,6 @@
 # Business Intelligence para un e-commerce en Looker Studio
 
-Proyecto integrador de un curso de Business Intelligence: calidad de datos, preparación en Google Sheets, dashboard en Looker Studio y storytelling sobre las ventas 2024 de un e-commerce. Después de terminarlo audité el dashboard con Python y encontré dos KPIs mal calculados; en este README están los números corregidos.
+Proyecto integrador de un curso de Business Intelligence: calidad de datos, preparación en Google Sheets, dashboard en Looker Studio y storytelling sobre las ventas 2024 de un e-commerce. Después de terminarlo audité el dashboard con Python, encontré cuatro indicadores mal calculados y los corregí.
 
 **Herramientas:** Google Sheets · Looker Studio · Python (pandas) para la verificación
 
@@ -42,18 +42,20 @@ El proyecto se hizo en cuatro etapas; cada entregable está en `docs/`.
 - **Medios de pago:** Mercado Pago 29 %, transferencia 26,3 %, efectivo 18,3 %, tarjeta de débito 17,8 % y tarjeta de crédito 8,6 %.
 - **Productos:** los que más unidades venden son el 26 (375), el 27 (357) y el 29 (350).
 
-<img src="https://github.com/user-attachments/assets/6679d4a2-30f1-4ceb-9ffc-83238b43a680" alt="Dashboard del proyecto en Looker Studio" width="700"/>
+<img src="images/dashboard.png" alt="Dashboard del proyecto en Looker Studio con los KPIs corregidos" width="700"/>
 
-### Errores que encontré en el dashboard
+### Errores que encontré y corregí en el dashboard
 
-Al recalcular los KPIs con Python, dos no coincidían con los datos:
+Al recalcular los KPIs con Python, cuatro indicadores no coincidían con los datos:
 
-- **"Ventas totales: 10.441"** en realidad suma las unidades vendidas. Las ventas son 3.000.
-- **"Productos vendidos: 59.006"** suma los ID de producto, un número sin significado. Hay 38 productos distintos.
+| KPI original | Qué calculaba | Corrección |
+|---|---|---|
+| Ventas totales: 10.441 | Suma de unidades (`SUM(Cantidad)`) | Renombrado a "Unidades vendidas" y agregué "Ventas" con el recuento distinto de `ID_Venta` (3.000) |
+| Productos vendidos: 59.006 | Suma de los ID de producto (`SUM(ID_Producto)`) | Recuento distinto de `ID_Producto` (38) |
+| Clientes: 307 | `ID_Cliente` usado como dimensión | Métrica con recuento distinto de `ID_Cliente` (326) |
+| Torta de medios de pago | Suma de los ID de venta (`SUM(ID_Venta)`) por medio de pago | Recuento distinto de `ID_Venta`: ahora muestra el % de ventas de cada medio |
 
-Además, el tablero muestra 307 clientes y los datos tienen 326 clientes distintos.
-
-La lección que me llevo: todo KPI de un dashboard tiene que poder reproducirse desde los datos crudos.
+Ahora los KPIs, la tabla de productos y la torta del dashboard coinciden con `verificar_kpis.py`. La lección que me llevo: todo KPI de un dashboard tiene que poder reproducirse desde los datos crudos.
 
 ## Cómo ejecutarlo
 
@@ -77,6 +79,8 @@ proyecto-bi-ecommerce-looker-studio/
 │   ├── etapa2_preparacion_analisis_datos.xlsx   # preparación y análisis en Sheets
 │   ├── etapa3_dashboards_visualizacion.pdf      # elección de gráficos
 │   └── etapa4_storytelling.pdf                  # presentación final
+├── images/
+│   └── dashboard.png                            # captura del dashboard corregido
 ├── verificar_kpis.py                            # recalcula los KPIs del dashboard
 ├── requirements.txt
 └── LICENSE
@@ -84,7 +88,7 @@ proyecto-bi-ecommerce-looker-studio/
 
 ## Próximos pasos
 
-- Corregir los KPIs en el dashboard y agregar un indicador de ventas pendientes.
+- Agregar al dashboard un indicador de ventas pendientes (hoy son el 15,6 %).
 - Hacer la limpieza de la Etapa 2 en SQL o pandas para que todo el proceso sea reproducible, no solo la verificación.
 - Si se suman precios al dataset, medir facturación y ticket promedio.
 
