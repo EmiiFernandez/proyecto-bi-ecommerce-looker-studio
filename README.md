@@ -1,66 +1,93 @@
-# Proyecto de Visualización de Datos para E-commerce en Locker Studio 📊✨
+# Business Intelligence para un e-commerce en Looker Studio
 
-Este repositorio contiene la documentación y los recursos relacionados con un proyecto de visualización de datos de e-commerce utilizando Locker Studio. El proyecto se divide en varias etapas, abarcando desde los fundamentos de Business Intelligence y la calidad de datos hasta la creación de dashboards interactivos y el storytelling de los hallazgos.
+Proyecto integrador de un curso de Business Intelligence: calidad de datos, preparación en Google Sheets, dashboard en Looker Studio y storytelling sobre las ventas 2024 de un e-commerce. Después de terminarlo audité el dashboard con Python y encontré dos KPIs mal calculados; en este README están los números corregidos.
 
-## Estructura del Repositorio
+**Herramientas:** Google Sheets · Looker Studio · Python (pandas) para la verificación
 
-* **`docs/`**: Contiene los documentos detallando cada etapa del proyecto.
-    * `Etapa 1_ Fundamentos y Calidad de Datos.pdf`: Etapa 1: Fundamentos y Calidad de Datos.
-    * `Etapa 2_ Preparación y Análisis de Datos.xlsx`: Etapa 2: Preparación y Análisis de Datos.
-    * `Etapa 3_ Dashboards y Visualización Interactiva.pdf`: Etapa 3: Dashboards y Visualización Interactiva.
-    * `Etapa 4_ Final del proyecto y Storytelling.pptx`: Etapa 4: Presentación Dashboard y Storytelling
-* **`README.md`**: Este archivo.
+**[Ver el dashboard en Looker Studio](https://lookerstudio.google.com/reporting/495f1084-597b-4651-9dfc-7c9f955bd3ed)**
 
-## Descripción de las Etapas
+## Problema
 
-### Etapa 1: Fundamentos y Calidad de Datos
+Un e-commerce quería entender cómo le fue en 2024: cuánto vendió, a cuántos clientes, qué productos salen más y cómo pagan sus clientes. El trabajo iba desde revisar la calidad de los datos hasta presentar los resultados en un dashboard.
 
-Esta etapa se centró en comprender los conceptos básicos de Business Intelligence (BI) y evaluar la calidad de los datos de ventas de un e-commerce.
+## Datos
 
-**Actividades Realizadas:**
+- Registro de ventas de 2024 provisto por el curso: 3.000 ventas después de la limpieza, del 31/01/2024 al 30/12/2024.
+- Columnas: ID de venta, fecha, cliente, producto, cantidad, medio de pago y estado (completa, pendiente o cancelada), más una tabla auxiliar con los 5 medios de pago.
+- El dataset no tiene precios, así que se mide en ventas (transacciones) y unidades, no en montos.
+- `data/ventas_2024.csv` es la hoja `ventas` del Excel de la Etapa 2, exportada para poder reproducir los KPIs con código.
 
-1.  **Captación del cliente:** Se diseñó un informe explicando la importancia de BI para un e-commerce, incluyendo ejemplos de herramientas.
-2.  **Investigación (contexto ético y legal):** Se realizó un caso de estudio sobre una violación de ética en datos en el ámbito del comercio electrónico. Se analizó el contexto, las faltas éticas y legales (recolección sin consentimiento, uso de datos sensibles, falta de transparencia, tercerización sin control), las consecuencias (sanciones económicas, pérdida de confianza, daño reputacional y las lecciones aprendidas para evitar errores futuros.
-3.  **Investigación (exploración y búsqueda de fuentes de datos):** Se identificaron tres fuentes públicas de datos relacionadas con el e-commerce:
-    * **Cámara Argentina de Comercio Electrónico (CACE)**: Para analizar tendencias de consumo y segmentación de usuarios.
-    * **Statista – E-commerce en Argentina**: Para comparar mercados e identificar productos populares.
-    * **Wuala.net – Datos Clave de E-commerce**: Para entender el perfil del consumidor y tendencias.
-4.  **Obtención y calidad de datos:** Se importó un conjunto de datos de ventas a Google Sheets y se aplicó un checklist de calidad de datos. Se encontraron valores faltantes en `ID_Ventas`, datos duplicados y un formato de fechas no uniforme. Se recomendó eliminar duplicados, unificar el formato de fechas y actualizar los datos. Puedes ver el formulario del checklist aquí: [Formulario de Calidad de Datos](https://docs.google.com/forms/d/e/1FAIpQLSeT7-fvMgu_nwdxatzkWVxGMkHkhU5LnJkArrD1UULCbjalsQ/viewform?usp=dialog).
+## Método
 
-### Etapa 3: Dashboards y Visualización Interactiva
+El proyecto se hizo en cuatro etapas; cada entregable está en `docs/`.
 
-Esta etapa se enfoca en la creación de los dashboards y la selección de los gráficos adecuados en Locker Studio.
+1. **Fundamentos y calidad de datos.** Armé un checklist de calidad en Google Forms y lo apliqué al dataset: había IDs de venta vacíos, filas duplicadas y fechas con formatos distintos (4/12/2024 y 04/12/2024). También incluye un caso de estudio sobre ética de datos en e-commerce y tres fuentes públicas de datos del sector (CACE, Statista, Wuala).
+2. **Preparación y análisis.** En Google Sheets normalicé las fechas, crucé los medios de pago con `VLOOKUP` y calculé ventas por mes, media, mediana, moda y desvío de unidades, y compras por cliente.
+3. **Dashboard.** Elegí cada gráfico según la pregunta: líneas para la evolución mensual, torta para los medios de pago, tabla para los productos más vendidos. Además hice una versión optimizada: reemplacé el treemap de compra promedio por cliente por un top 10, que se lee mejor.
+4. **Storytelling.** Presentación de los hallazgos a partir del dashboard.
+5. **Verificación.** Con `verificar_kpis.py` recalculo en pandas cada KPI desde el CSV.
 
-**Gráficos Utilizados y su Propósito:**
+## Resultados
 
-* **"Ventas totales por mes" (Gráfico de líneas):** Utilizado para mostrar tendencias a lo largo del tiempo, siendo una elección adecuada por su limpieza y claridad. Se considera la inclusión de una línea horizontal para el promedio de ventas mensuales.
-* **"Método de pago" (Gráfico circular):** Permite entender las proporciones de cada método de pago.
-* **"Promedio de compra por cliente" (Treemap - versión original):** Diseñado para visualizar el promedio de compra por cliente, permitiendo identificar rápidamente a los clientes con un alto promedio.
-* **"Productos más vendidos" (Tabla):** Se utiliza para identificar rápidamente los productos más vendidos.
+| Indicador | Valor |
+|---|---|
+| Ventas (transacciones) | 3.000 |
+| Unidades vendidas | 10.441 |
+| Unidades promedio por venta | 3,48 |
+| Clientes distintos | 326 |
+| Productos distintos | 38 |
 
-**Optimización:**
+- **Estado:** el 84 % de las ventas está completa (2.523), el 15,6 % pendiente (467) y 10 fueron canceladas.
+- **Evolución mensual:** de febrero a diciembre las ventas se mueven entre 249 y 309 por mes. Junio es el mes con más actividad: 309 ventas y 1.077 unidades. Enero aparece muy bajo solo porque los datos arrancan el 31 de enero; no es una caída de ventas.
+- **Medios de pago:** Mercado Pago 29 %, transferencia 26,3 %, efectivo 18,3 %, tarjeta de débito 17,8 % y tarjeta de crédito 8,6 %.
+- **Productos:** los que más unidades venden son el 26 (375), el 27 (357) y el 29 (350).
 
-* Se decidió optimizar el gráfico de **"Promedio de compra por cliente"** ya que el treemap original puede presentar problemas de interpretación. La nueva versión se centrará en mostrar el top 10 de clientes para facilitar la identificación y comparación de los clientes con el promedio de compra más alto, mejorando la legibilidad de los valores exactos.
+<img src="https://github.com/user-attachments/assets/6679d4a2-30f1-4ceb-9ffc-83238b43a680" alt="Dashboard del proyecto en Looker Studio" width="700"/>
 
-### Etapa 4: Final del Proyecto y Storytelling
+### Errores que encontré en el dashboard
 
-En esta etapa se presentan los hallazgos clave a través de los dashboards y se realiza el storytelling de los datos.
+Al recalcular los KPIs con Python, dos no coincidían con los datos:
 
-Puedes acceder al dashboard en Locker Studio aquí: [Dashboard de E-commerce en Locker Studio](https://lookerstudio.google.com/reporting/495f1084-597b-4651-9dfc-7c9f955bd3ed).
+- **"Ventas totales: 10.441"** en realidad suma las unidades vendidas. Las ventas son 3.000.
+- **"Productos vendidos: 59.006"** suma los ID de producto, un número sin significado. Hay 38 productos distintos.
 
-**Indicadores Clave (para el año 2024):**
+Además, el tablero muestra 307 clientes y los datos tienen 326 clientes distintos.
 
-* **Ventas totales:** 10.441.
-* **Clientes:** 307.
-* **Productos vendidos:** 59.006, con junio como el mes más activo.
-* **Promedio de productos por venta:** Más de 3 productos por venta (3.48).
+La lección que me llevo: todo KPI de un dashboard tiene que poder reproducirse desde los datos crudos.
 
-<img width="1139" height="661" alt="image" src="https://github.com/user-attachments/assets/6679d4a2-30f1-4ceb-9ffc-83238b43a680" />
+## Cómo ejecutarlo
 
-## 🤝 Contribuciones
+Para ver el dashboard alcanza con el link de arriba. Para reproducir los KPIs:
 
-¡Tu interés es bienvenido\! Si tienes sugerencias o deseas contribuir, no dudes en abrir un *issue* o enviar un *pull request*.
+```bash
+git clone https://github.com/EmiiFernandez/proyecto-bi-ecommerce-looker-studio.git
+cd proyecto-bi-ecommerce-looker-studio
+pip install -r requirements.txt
+python verificar_kpis.py
+```
 
-## 🔗 Conectemos
+## Estructura del repo
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/emiliafernandez)
+```
+proyecto-bi-ecommerce-looker-studio/
+├── data/
+│   └── ventas_2024.csv                          # ventas limpias (3.000 filas)
+├── docs/
+│   ├── etapa1_fundamentos_calidad_datos.pdf     # checklist de calidad, ética y fuentes
+│   ├── etapa2_preparacion_analisis_datos.xlsx   # preparación y análisis en Sheets
+│   ├── etapa3_dashboards_visualizacion.pdf      # elección de gráficos
+│   └── etapa4_storytelling.pdf                  # presentación final
+├── verificar_kpis.py                            # recalcula los KPIs del dashboard
+├── requirements.txt
+└── LICENSE
+```
+
+## Próximos pasos
+
+- Corregir los KPIs en el dashboard y agregar un indicador de ventas pendientes.
+- Hacer la limpieza de la Etapa 2 en SQL o pandas para que todo el proceso sea reproducible, no solo la verificación.
+- Si se suman precios al dataset, medir facturación y ticket promedio.
+
+---
+
+Emilia Fernández · [LinkedIn](https://www.linkedin.com/in/emiliafernandez) · Licencia MIT
